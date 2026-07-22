@@ -1,21 +1,46 @@
 pipeline {
     agent none
     stages {
-        stage('Build on Windows') {
-            agent { label 'windows' }
-            steps {
-                bat 'gradlew build'
-            }
-        }
-        stage('Build on Linux') {
-            agent { label 'linux' }
-            steps {
-                sh 'mvn clean install'
+        stage('Parallel Builds') {
+            parallel {
+                stage('Build on Windows') {
+                    agent { label 'windows' }
+                    steps {
+                        bat 'echo "======================================"'
+                        bat 'echo "Executing on Windows Node"'
+                        bat 'echo "Workspace: %WORKSPACE%"'
+                        bat 'echo "Simulating Gradle build..."'
+                        bat 'echo "Windows Build Output" > windows-artifact.txt'
+                        bat 'echo "======================================"'
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'windows-artifact.txt', allowEmptyArchive: true
+                        }
+                    }
+                }
+                stage('Build on Linux') {
+                    agent { label 'linux' }
+                    steps {
+                        sh 'echo "======================================"'
+                        sh 'echo "Executing on Linux Node"'
+                        sh 'echo "Workspace: $WORKSPACE"'
+                        sh 'echo "Simulating Maven build..."'
+                        sh 'echo "Linux Build Output" > linux-artifact.txt'
+                        sh 'echo "======================================"'
+                    }
+                    post {
+                        always {
+                            archiveArtifacts artifacts: 'linux-artifact.txt', allowEmptyArchive: true
+                        }
+                    }
+                }
             }
         }
         stage('Test on Linux') {
             agent { label 'linux' }
             steps {
+                sh 'chmod +x ./nodeHealth.sh'
                 sh './nodeHealth.sh'
             }
         }

@@ -1,0 +1,81 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - basicSSHUserPrivateKey:
+              scope: GLOBAL
+              id: "linux-agent-key"
+              username: "jenkins"
+              description: "SSH Key for Linux Agent"
+              privateKeySource:
+                directEntry:
+                  privateKey: |-
+                    -----BEGIN OPENSSH PRIVATE KEY-----
+                    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+                    QyNTUxOQAAACCiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x9wAAAJj+7x9w/u8f
+                    cAAAAAtzc2gtZWQyNTUxOQAAACCiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x9w
+                    AAAECiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x96JT5vZjuHuzvHjxvwwzP2zf
+                    f7qzhvjHzLurnH37LvH3AAAAE2plbmtpbnNAamVua2lucy12bQEA
+                    -----END OPENSSH PRIVATE KEY-----
+
+jenkins:
+  systemMessage: "Welcome to Jenkins Remoting Demonstration! Configured by JCasC."
+  numExecutors: 0
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+  
+  nodes:
+    - permanent:
+        labelString: "linux"
+        mode: NORMAL
+        name: "linux-agent"
+        numExecutors: 2
+        remoteFS: "/home/jenkins/agent"
+        launcher:
+          ssh:
+            host: "linux-agent"
+            port: 22
+            credentialsId: "linux-agent-key"
+            sshHostKeyVerificationStrategy:
+              manuallyProvidedKeyVerificationStrategy:
+                key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJT5vZjuHuzvHjxvwwzP2zff7qzhvjHzLurnH37LvH3"
+    - permanent:
+        labelString: "windows"
+        mode: NORMAL
+        name: "windows-agent"
+        numExecutors: 1
+        remoteFS: "C:\\JenkinsAgent"
+        launcher:
+          jnlp:
+            workDirSettings:
+              disabled: false
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+              workDirPath: "C:\\JenkinsAgent"
+
+jobs:
+  - script: >
+      pipelineJob('Distributed-Build-Demo') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('file:///var/jenkins_home/demo_repo')
+                }
+                branch('*/main')
+              }
+            }
+            scriptPath('jenkinsfile')
+          }
+        }
+      }

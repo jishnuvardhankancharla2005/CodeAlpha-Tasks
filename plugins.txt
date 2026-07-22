@@ -1,0 +1,11 @@
+configuration-as-code
+job-dsl
+workflow-aggregator
+ssh-slaves
+ws-cleanup
+git
+pipeline-stage-view
+role-strategy
+matrix-auth
+cloudbees-folder
+pipeline-utility-steps
