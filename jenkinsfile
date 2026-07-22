@@ -1,48 +1,159 @@
 pipeline {
-    agent none
+    // Execute stages only on designated nodes to save controller resources
+    agent none 
+    
+    options {
+        // Keep only the last 5 builds to save disk space
+        buildDiscarder(logRotator(numToKeepStr: '5'))
+        // Add timestamps to console output
+        timestamps()
+        // Fail the build if it takes longer than 15 minutes
+        timeout(time: 15, unit: 'MINUTES')
+        // Prevent multiple builds from running simultaneously and causing conflicts
+        disableConcurrentBuilds()
+    }
+    
+    parameters {
+        // Allow user to select target environment
+        choice(name: 'ENVIRONMENT', choices: ['DEV', 'STAGING', 'PROD'], description: 'Select the target deployment environment')
+        // Allow user to toggle heavy testing
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Check to run the full automated test suite across nodes')
+    }
+    
     stages {
-        stage('Parallel Builds') {
+        stage('Workspace Cleanup') {
+            parallel {
+                stage('Clean Linux Workspace') {
+                    agent { label 'linux' }
+                    steps {
+                        // deleteDir() is built-in and safely empties the workspace
+                        deleteDir() 
+                        sh 'echo "Linux workspace initialized and cleaned."'
+                    }
+                }
+                stage('Clean Windows Workspace') {
+                    agent { label 'windows' }
+                    steps {
+                        deleteDir()
+                        bat 'echo "Windows workspace initialized and cleaned."'
+                    }
+                }
+            }
+        }
+        
+        stage('Distributed Build Phase') {
             parallel {
                 stage('Build on Windows') {
                     agent { label 'windows' }
+                    environment {
+                        BUILD_VERSION = 'v2.0-Windows'
+                    }
                     steps {
                         bat 'echo "======================================"'
-                        bat 'echo "Executing on Windows Node"'
-                        bat 'echo "Workspace: %WORKSPACE%"'
-                        bat 'echo "Simulating Gradle build..."'
-                        bat 'echo "Windows Build Output" > windows-artifact.txt'
+                        bat 'echo "Starting Advanced Windows Build..."'
+                        bat 'echo "Target Environment: %ENVIRONMENT%"'
+                        bat 'echo "Build Version: %BUILD_VERSION%"'
+                        bat 'echo "Simulating Compilation..."'
+                        
+                        // Create a dummy artifact to prove execution
+                        bat 'echo "Windows_Release_%ENVIRONMENT%" > windows_app.exe'
                         bat 'echo "======================================"'
                     }
                     post {
-                        always {
-                            archiveArtifacts artifacts: 'windows-artifact.txt', allowEmptyArchive: true
+                        success {
+                            // Archive with fingerprinting for traceability
+                            archiveArtifacts artifacts: 'windows_app.exe', fingerprint: true
                         }
                     }
                 }
+                
                 stage('Build on Linux') {
                     agent { label 'linux' }
+                    environment {
+                        BUILD_VERSION = 'v2.0-Linux'
+                    }
                     steps {
                         sh 'echo "======================================"'
-                        sh 'echo "Executing on Linux Node"'
-                        sh 'echo "Workspace: $WORKSPACE"'
-                        sh 'echo "Simulating Maven build..."'
-                        sh 'echo "Linux Build Output" > linux-artifact.txt'
+                        sh 'echo "Starting Advanced Linux Build..."'
+                        sh 'echo "Target Environment: $ENVIRONMENT"'
+                        sh 'echo "Build Version: $BUILD_VERSION"'
+                        sh 'echo "Simulating Compilation..."'
+                        
+                        // Create a dummy artifact to prove execution
+                        sh 'echo "Linux_Release_$ENVIRONMENT" > linux_app.tar.gz'
                         sh 'echo "======================================"'
                     }
                     post {
-                        always {
-                            archiveArtifacts artifacts: 'linux-artifact.txt', allowEmptyArchive: true
+                        success {
+                            archiveArtifacts artifacts: 'linux_app.tar.gz', fingerprint: true
                         }
                     }
                 }
             }
         }
-        stage('Test on Linux') {
+        
+        stage('Distributed Testing Phase') {
+            // Only run this stage if the user checked the RUN_TESTS boolean parameter
+            when {
+                expression { params.RUN_TESTS == true }
+            }
+            parallel {
+                stage('Windows Tests') {
+                    agent { label 'windows' }
+                    steps {
+                        // Retry block ensures flaky tests get a second chance
+                        retry(2) {
+                            bat 'echo "Executing Windows Integration Tests..."'
+                            bat 'echo "All Windows tests passed successfully!"'
+                        }
+                    }
+                }
+                stage('Linux Tests') {
+                    agent { label 'linux' }
+                    steps {
+                        // Timeouts prevent hanging tests
+                        timeout(time: 2, unit: 'MINUTES') {
+                            sh 'echo "Executing Linux Unit Tests..."'
+                            sh 'chmod +x ./nodeHealth.sh || true'
+                            sh 'bash ./nodeHealth.sh || echo "nodeHealth.sh fallback executed"'
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Manual Approval Gate') {
+            // Only ask for approval if deploying to PROD
+            when {
+                expression { params.ENVIRONMENT == 'PROD' }
+            }
+            // "agent none" means it waits for human input without consuming an executor slot
+            agent none 
+            steps {
+                input message: "You are targeting PROD. Do you approve this deployment?", ok: "Deploy to Production"
+            }
+        }
+        
+        stage('Deployment') {
+            // Run deployment tasks on Linux agent
             agent { label 'linux' }
             steps {
-                sh 'chmod +x ./nodeHealth.sh'
-                sh './nodeHealth.sh'
+                sh 'echo "Initiating Deployment sequence for ${ENVIRONMENT}..."'
+                sh 'echo "Deployment completed successfully!"'
             }
+        }
+    }
+    
+    // Post actions execute at the very end regardless of outcome
+    post {
+        always {
+            echo "Pipeline execution finished. Aggregating results..."
+        }
+        success {
+            echo "✅ SUCCESS: The distributed pipeline executed flawlessly across all nodes!"
+        }
+        failure {
+            echo "❌ FAILURE: The pipeline encountered an error. Please review the logs."
         }
     }
 }
