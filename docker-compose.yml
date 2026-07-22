@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  jenkins:
+    build: .
+    container_name: jenkins-controller
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc.yaml
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - .:/var/jenkins_home/demo_repo
+    networks:
+      - jenkins_network
+
+  linux-agent:
+    image: jenkins/ssh-agent:latest-jdk17
+    container_name: jenkins-linux-agent
+    environment:
+      - JENKINS_AGENT_SSH_PUBKEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKJT5vZjuHuzvHjxvwwzP2zff7qzhvjHzLurnH37LvH3
+    networks:
+      - jenkins_network
+
+volumes:
+  jenkins_home:
+
+networks:
+  jenkins_network:
+    driver: bridge
