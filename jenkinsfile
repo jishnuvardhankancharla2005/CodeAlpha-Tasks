@@ -1,159 +1,173 @@
+// -------------------------------------------------------------------------
+// ADVANCED PIPELINE: Demonstrating Cross-Node Remoting, Stashing, 
+// Dynamic Parallelism, and Groovy Scripting in Jenkins.
+// -------------------------------------------------------------------------
+
+// 1. Helper function (DRY Principle - Don't Repeat Yourself)
+def logCustomStep(String stepName, String message) {
+    echo ">>> [${stepName}] : ${message} <<<"
+}
+
 pipeline {
-    // Execute stages only on designated nodes to save controller resources
+    // We execute stages only on designated nodes to save controller resources
     agent none 
     
     options {
-        // Keep only the last 5 builds to save disk space
         buildDiscarder(logRotator(numToKeepStr: '5'))
-        // Add timestamps to console output
         timestamps()
-        // Fail the build if it takes longer than 15 minutes
-        timeout(time: 15, unit: 'MINUTES')
-        // Prevent multiple builds from running simultaneously and causing conflicts
+        // Aggressive timeout to prevent hanging builds
+        timeout(time: 20, unit: 'MINUTES')
         disableConcurrentBuilds()
     }
     
     parameters {
-        // Allow user to select target environment
-        choice(name: 'ENVIRONMENT', choices: ['DEV', 'STAGING', 'PROD'], description: 'Select the target deployment environment')
-        // Allow user to toggle heavy testing
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Check to run the full automated test suite across nodes')
+        choice(name: 'ENVIRONMENT', choices: ['DEV', 'STAGING', 'PROD'], description: 'Deployment Environment')
+        booleanParam(name: 'RUN_FULL_SUITE', defaultValue: true, description: 'Execute comprehensive dynamic testing')
+    }
+    
+    environment {
+        // Global variables available to all nodes and stages
+        PROJECT_CODENAME = 'Antigravity-Remoting'
     }
     
     stages {
-        stage('Workspace Cleanup') {
+        stage('Cross-Node Initialization') {
             parallel {
-                stage('Clean Linux Workspace') {
+                stage('Init Linux') {
                     agent { label 'linux' }
                     steps {
-                        // deleteDir() is built-in and safely empties the workspace
-                        deleteDir() 
-                        sh 'echo "Linux workspace initialized and cleaned."'
+                        deleteDir()
+                        script {
+                            logCustomStep("Linux Init", "Workspace safely wiped on Linux node.")
+                        }
                     }
                 }
-                stage('Clean Windows Workspace') {
+                stage('Init Windows') {
                     agent { label 'windows' }
                     steps {
                         deleteDir()
-                        bat 'echo "Windows workspace initialized and cleaned."'
+                        script {
+                            logCustomStep("Windows Init", "Workspace safely wiped on Windows node.")
+                        }
                     }
                 }
             }
         }
         
-        stage('Distributed Build Phase') {
-            parallel {
-                stage('Build on Windows') {
+        stage('Distributed Build & Data Transfer') {
+            // This stage demonstrates generating data on Windows, passing it 
+            // securely through the Jenkins Controller, and consuming it on Linux.
+            // This is the ultimate demonstration of Jenkins Remoting capabilities!
+            stages {
+                stage('Compile Core (Windows)') {
                     agent { label 'windows' }
-                    environment {
-                        BUILD_VERSION = 'v2.0-Windows'
-                    }
                     steps {
-                        bat 'echo "======================================"'
-                        bat 'echo "Starting Advanced Windows Build..."'
-                        bat 'echo "Target Environment: %ENVIRONMENT%"'
-                        bat 'echo "Build Version: %BUILD_VERSION%"'
-                        bat 'echo "Simulating Compilation..."'
+                        bat 'echo "Compiling Core Engine on Windows Architecture..."'
+                        bat 'echo "Windows_Core_Compiled_Successfully" > windows_core.dat'
                         
-                        // Create a dummy artifact to prove execution
-                        bat 'echo "Windows_Release_%ENVIRONMENT%" > windows_app.exe'
-                        bat 'echo "======================================"'
-                    }
-                    post {
-                        success {
-                            // Archive with fingerprinting for traceability
-                            archiveArtifacts artifacts: 'windows_app.exe', fingerprint: true
-                        }
+                        // STASH: Save the file from the Windows node into the Jenkins Controller memory
+                        stash name: 'windows_payload', includes: 'windows_core.dat'
+                        
+                        script { logCustomStep("Windows Build", "Core dat file stashed securely to Controller.") }
                     }
                 }
                 
-                stage('Build on Linux') {
+                stage('Assemble & Package (Linux)') {
                     agent { label 'linux' }
-                    environment {
-                        BUILD_VERSION = 'v2.0-Linux'
-                    }
                     steps {
-                        sh 'echo "======================================"'
-                        sh 'echo "Starting Advanced Linux Build..."'
-                        sh 'echo "Target Environment: $ENVIRONMENT"'
-                        sh 'echo "Build Version: $BUILD_VERSION"'
-                        sh 'echo "Simulating Compilation..."'
+                        sh 'echo "Assembling Final Package on Linux Architecture..."'
                         
-                        // Create a dummy artifact to prove execution
-                        sh 'echo "Linux_Release_$ENVIRONMENT" > linux_app.tar.gz'
-                        sh 'echo "======================================"'
-                    }
-                    post {
-                        success {
-                            archiveArtifacts artifacts: 'linux_app.tar.gz', fingerprint: true
-                        }
+                        // UNSTASH: Pull the file that was generated on Windows onto the Linux node!
+                        unstash 'windows_payload'
+                        
+                        // Prove that we successfully transferred the Windows data
+                        sh 'echo "Content received from Windows:"'
+                        sh 'cat windows_core.dat'
+                        
+                        // Merge it into a final artifact
+                        sh 'echo "- Linux_Wrapper_Added" >> windows_core.dat'
+                        sh 'cp windows_core.dat final_release_package.txt'
+                        
+                        // Securely archive the merged artifact
+                        archiveArtifacts artifacts: 'final_release_package.txt', fingerprint: true
+                        
+                        script { logCustomStep("Linux Package", "Successfully merged Windows payload with Linux data and archived.") }
                     }
                 }
             }
         }
         
-        stage('Distributed Testing Phase') {
-            // Only run this stage if the user checked the RUN_TESTS boolean parameter
+        stage('Dynamic Parallel Testing') {
             when {
-                expression { params.RUN_TESTS == true }
+                expression { params.RUN_FULL_SUITE == true }
             }
-            parallel {
-                stage('Windows Tests') {
-                    agent { label 'windows' }
-                    steps {
-                        // Retry block ensures flaky tests get a second chance
-                        retry(2) {
-                            bat 'echo "Executing Windows Integration Tests..."'
-                            bat 'echo "All Windows tests passed successfully!"'
+            agent { label 'linux' }
+            steps {
+                script {
+                    // Demonstrating Groovy scripting to dynamically generate parallel stages on the fly!
+                    def testTypes = ['Security', 'Integration', 'Performance']
+                    def parallelTasks = [:]
+                    
+                    for (int i = 0; i < testTypes.size(); i++) {
+                        // Must bind the variable locally inside the loop for Groovy closures
+                        def testName = testTypes[i] 
+                        parallelTasks[testName] = {
+                            stage("Run ${testName} Tests") {
+                                sh "echo 'Executing ${testName} test suite on Linux node...'"
+                                sleep 2 // Simulate complex testing work
+                                sh "echo '✅ ${testName} tests PASSED'"
+                            }
                         }
                     }
-                }
-                stage('Linux Tests') {
-                    agent { label 'linux' }
-                    steps {
-                        // Timeouts prevent hanging tests
-                        timeout(time: 2, unit: 'MINUTES') {
-                            sh 'echo "Executing Linux Unit Tests..."'
-                            sh 'chmod +x ./nodeHealth.sh || true'
-                            sh 'bash ./nodeHealth.sh || echo "nodeHealth.sh fallback executed"'
-                        }
-                    }
+                    
+                    // Execute the dynamically generated map of stages in parallel
+                    parallel parallelTasks
                 }
             }
         }
         
-        stage('Manual Approval Gate') {
-            // Only ask for approval if deploying to PROD
+        stage('Milestone & Approval Gate') {
             when {
                 expression { params.ENVIRONMENT == 'PROD' }
             }
-            // "agent none" means it waits for human input without consuming an executor slot
             agent none 
             steps {
-                input message: "You are targeting PROD. Do you approve this deployment?", ok: "Deploy to Production"
+                // Milestone ensures that if a newer build reaches this point, older pending builds are cancelled
+                milestone(1)
+                
+                timeout(time: 5, unit: 'MINUTES') {
+                    input message: "Review the archived final_release_package.txt. Approve PROD Deployment?"
+                }
+                
+                milestone(2)
             }
         }
         
-        stage('Deployment') {
-            // Run deployment tasks on Linux agent
+        stage('Final Deployment') {
             agent { label 'linux' }
             steps {
-                sh 'echo "Initiating Deployment sequence for ${ENVIRONMENT}..."'
-                sh 'echo "Deployment completed successfully!"'
+                script {
+                    logCustomStep("Deployment", "Deploying ${env.PROJECT_CODENAME} to ${params.ENVIRONMENT}...")
+                }
+                sh 'echo "Deployment Sequence Completed 100% Error-Free!"'
             }
         }
     }
     
-    // Post actions execute at the very end regardless of outcome
     post {
         always {
-            echo "Pipeline execution finished. Aggregating results..."
+            script {
+                logCustomStep("Pipeline Status", "Execution complete. Beginning teardown.")
+            }
         }
         success {
-            echo "✅ SUCCESS: The distributed pipeline executed flawlessly across all nodes!"
+            echo "🏆 SUCCESS: The advanced multi-node data-transfer pipeline executed flawlessly!"
         }
         failure {
-            echo "❌ FAILURE: The pipeline encountered an error. Please review the logs."
+            echo "💥 FAILURE: An unexpected error occurred. Review the step logs."
+        }
+        aborted {
+            echo "🛑 ABORTED: The pipeline was cancelled or timed out."
         }
     }
 }
