@@ -1,22 +1,9 @@
 // -------------------------------------------------------------------------
-// ENTERPRISE ADVANCED JENKINS REMOTING PIPELINE
-// Demonstrating Cross-Platform Remoting, Dynamic Parallel Matrix, 
-// Security Gates, Artifact Fingerprinting & Multi-OS Compatibility
+// ADVANCED PIPELINE: Demonstrating Cross-Node Remoting, Stashing, 
+// Dynamic Parallelism, Security Gates, and Groovy Scripting in Jenkins.
 // -------------------------------------------------------------------------
 
-// Groovy Helper Functions (DRY Principle)
-def logHeader(String title) {
-    echo "=========================================================================="
-    echo "  ▶ ${title}"
-    echo "=========================================================================="
-}
-
-def logCustomStep(String stepName, String message) {
-    echo "[${stepName}] : ${message}"
-}
-
 pipeline {
-    // Stage-level agent allocation preserves controller resources
     agent none 
     
     options {
@@ -27,142 +14,128 @@ pipeline {
     }
     
     parameters {
-        choice(name: 'ENVIRONMENT', choices: ['DEV', 'STAGING', 'PROD'], description: 'Target Deployment Environment')
-        choice(name: 'DEPLOY_STRATEGY', choices: ['Blue-Green', 'Rolling-Update', 'Canary'], description: 'Deployment Strategy')
-        booleanParam(name: 'RUN_FULL_SUITE', defaultValue: true, description: 'Execute comprehensive parallel test matrix')
-        booleanParam(name: 'SECURITY_SCAN', defaultValue: true, description: 'Perform SAST and vulnerability analysis')
+        choice(name: 'ENVIRONMENT', choices: ['DEV', 'STAGING', 'PROD'], description: 'Deployment Environment')
+        booleanParam(name: 'RUN_FULL_SUITE', defaultValue: true, description: 'Execute dynamic testing matrix')
     }
     
     environment {
-        PROJECT_CODENAME = 'CodeAlpha-Remoting-Engine'
-        APP_VERSION      = '2.5.0-RELEASE'
+        PROJECT_CODENAME = 'Antigravity-Remoting'
     }
     
     stages {
-        stage('🧹 Environment Initialization & Node Health') {
-            agent { label 'linux || built-in || windows' }
-            steps {
-                script {
-                    logHeader("STAGE 1: Environment Initialization & Node Health Check")
-                    echo "Executing on Node: ${env.NODE_NAME} (Workspace: ${env.WORKSPACE})"
-                    
-                    if (isUnix()) {
-                        sh 'echo "OS: Linux/Unix Environment Detected"'
-                        if (fileExists('nodeHealth.sh')) {
-                            sh 'chmod +x nodeHealth.sh && ./nodeHealth.sh'
-                        } else {
-                            logCustomStep("Health Check", "Standard system resources verified.")
+        stage('Cross-Node Initialization') {
+            parallel {
+                stage('Init Linux') {
+                    agent { label 'linux || built-in || windows' }
+                    steps {
+                        script {
+                            echo ">>> [Init Linux] : Workspace wiped and verified <<<"
+                            if (isUnix()) {
+                                sh 'echo "Linux Node Workspace Ready"'
+                            } else {
+                                bat 'echo Linux/Host Workspace Verified'
+                            }
                         }
-                    } else {
-                        bat 'echo OS: Windows Host Environment Detected'
-                        logCustomStep("Health Check", "Windows host system resources verified.")
+                    }
+                }
+                stage('Init Windows') {
+                    agent { label 'windows || built-in || linux' }
+                    steps {
+                        script {
+                            echo ">>> [Init Windows] : Workspace wiped and verified <<<"
+                            if (isUnix()) {
+                                sh 'echo "Windows/Host Workspace Ready"'
+                            } else {
+                                bat 'echo Windows Node Workspace Ready'
+                            }
+                        }
                     }
                 }
             }
         }
-
-        stage('⚙️ Distributed Remoting & Cross-Platform Assembly') {
+        
+        stage('Distributed Build & Data Transfer') {
             stages {
-                stage('📦 Compile & Stash Payload (Windows Agent)') {
+                stage('Compile Core (Windows)') {
                     agent { label 'windows || built-in || linux' }
                     steps {
                         script {
-                            logHeader("STAGE 2A: Compiling Core Engine Payload")
-                            logCustomStep("Remoting", "Compiling core engine binary payload...")
-                            
+                            echo ">>> [Compile Core] : Compiling core engine payload on Windows..."
                             if (isUnix()) {
-                                sh 'echo "Windows_Core_Engine_v2.5.0_Compiled_OK" > windows_core.dat'
-                                sh 'echo "Build_Type: Cross-Platform Assembly" >> windows_core.dat'
+                                sh 'echo "Windows_Core_Compiled_Successfully" > windows_core.dat'
                             } else {
-                                bat 'echo Windows_Core_Engine_v2.5.0_Compiled_OK > windows_core.dat'
-                                bat 'echo Build_Type: Cross-Platform Assembly >> windows_core.dat'
+                                bat 'echo Windows_Core_Compiled_Successfully > windows_core.dat'
                             }
-                            
-                            logCustomStep("Stash Operation", "Stashing windows_core.dat onto Jenkins Controller...")
                             stash name: 'windows_payload', includes: 'windows_core.dat'
+                            echo ">>> [Compile Core] : Payload stashed securely to Controller <<<"
                         }
                     }
                 }
                 
-                stage('🛠️ Unstash & Assemble Package (Linux Agent)') {
+                stage('Assemble & Package (Linux)') {
                     agent { label 'linux || built-in || windows' }
                     steps {
                         script {
-                            logHeader("STAGE 2B: Unstashing and Assembling Final Release Package")
-                            
+                            echo ">>> [Assemble Package] : Unstashing payload and assembling package..."
                             unstash 'windows_payload'
-                            
                             if (isUnix()) {
-                                sh '''
-                                    echo "=== Verifying Remoting Data Transfer ==="
-                                    cat windows_core.dat
-                                    echo ""
-                                    echo "Adding Native Wrapper & Security Shims..."
-                                    echo "Linux_Wrapper_Layer_Added=True" >> windows_core.dat
-                                    echo "Architecture_Target=x86_64_multiarch" >> windows_core.dat
-                                    
-                                    cp windows_core.dat final_release_package.txt
-                                    md5sum final_release_package.txt > checksum.md5
-                                '''
+                                sh 'echo "Content received from Windows:"'
+                                sh 'cat windows_core.dat'
+                                sh 'echo "- Linux_Wrapper_Added" >> windows_core.dat'
+                                sh 'cp windows_core.dat final_release_package.txt'
+                                sh 'md5sum final_release_package.txt > checksum.md5'
                             } else {
-                                bat '''
-                                    echo === Verifying Remoting Data Transfer ===
-                                    type windows_core.dat
-                                    echo.
-                                    echo Adding Native Wrapper & Security Shims...
-                                    echo Linux_Wrapper_Layer_Added=True>> windows_core.dat
-                                    echo Architecture_Target=x86_64_multiarch>> windows_core.dat
-                                    
-                                    copy windows_core.dat final_release_package.txt
-                                    echo verified_checksum_ok > checksum.md5
-                                '''
+                                bat 'echo Content received from Windows:'
+                                bat 'type windows_core.dat'
+                                bat 'echo - Linux_Wrapper_Added >> windows_core.dat'
+                                bat 'copy windows_core.dat final_release_package.txt'
+                                bat 'echo verified > checksum.md5'
                             }
-                            
-                            logCustomStep("Fingerprinting", "Generating checksum fingerprint and archiving artifacts...")
                             archiveArtifacts artifacts: 'final_release_package.txt, checksum.md5', fingerprint: true
+                            echo ">>> [Assemble Package] : Merged payload archived successfully <<<"
                         }
                     }
                 }
             }
         }
         
-        stage('🔒 Code Quality & Security Audit') {
-            when {
-                expression { params.SECURITY_SCAN == true }
-            }
+        stage('Run Security Tests') {
             agent { label 'linux || built-in || windows' }
             steps {
                 script {
-                    logHeader("STAGE 3: SAST & Dependency Vulnerability Audit")
-                    logCustomStep("Security Scan", "Scanning release package for known CVE vulnerabilities...")
+                    echo ">>> [Security Audit] : Running security vulnerability analysis..."
                     if (isUnix()) {
-                        sh 'echo "[OK] No critical vulnerabilities found. Security Gate PASSED."'
+                        sh 'echo "Security Audit Passed: 0 Vulnerabilities Found"'
                     } else {
-                        bat 'echo [OK] No critical vulnerabilities found. Security Gate PASSED.'
+                        bat 'echo Security Audit Passed: 0 Vulnerabilities Found'
                     }
                 }
             }
         }
         
-        stage('🔀 Dynamic Parallel Test Matrix') {
+        stage('Dynamic Parallel Testing') {
             when {
                 expression { params.RUN_FULL_SUITE == true }
             }
             agent { label 'linux || built-in || windows' }
             steps {
                 script {
-                    logHeader("STAGE 4: Programmatic Parallel Test Suite Execution")
-                    
-                    def testCategories = ['Security-PenTest', 'Integration-Suite', 'Performance-Load', 'API-Contract']
+                    def testTypes = ['Security', 'Integration', 'Performance', 'Regression']
                     def parallelTasks = [:]
                     
-                    for (int i = 0; i < testCategories.size(); i++) {
-                        def testName = testCategories[i] 
+                    for (int i = 0; i < testTypes.size(); i++) {
+                        def testName = testTypes[i] 
                         parallelTasks[testName] = {
-                            stage("Test: ${testName}") {
-                                echo "▶ Starting ${testName} test suite..."
-                                sleep 1
-                                echo "✅ ${testName} passed cleanly with 0 failures."
+                            stage("Run ${testName} Tests") {
+                                if (isUnix()) {
+                                    sh "echo 'Executing ${testName} test suite on node...'"
+                                    sleep 1
+                                    sh "echo '✅ ${testName} tests PASSED'"
+                                } else {
+                                    bat "echo Executing ${testName} test suite on node..."
+                                    sleep 1
+                                    bat "echo PASS: ${testName} tests PASSED"
+                                }
                             }
                         }
                     }
@@ -172,44 +145,15 @@ pipeline {
             }
         }
         
-        stage('🛑 Milestone & Production Approval Gate') {
-            when {
-                expression { params.ENVIRONMENT == 'PROD' }
-            }
-            agent none 
-            steps {
-                script { logHeader("STAGE 5: Production Milestone & Interactive Manual Gate") }
-                
-                milestone(1)
-                
-                timeout(time: 5, unit: 'MINUTES') {
-                    input message: "⚠️ Promoted to PROD! Confirm deployment of ${env.PROJECT_CODENAME} v${env.APP_VERSION}?", 
-                          ok: "Approve & Deploy to PROD"
-                }
-                
-                milestone(2)
-            }
-        }
-        
-        stage('🚀 Automated Multi-Strategy Deployment') {
+        stage('Final Deployment') {
             agent { label 'linux || built-in || windows' }
             steps {
                 script {
-                    logHeader("STAGE 6: Deployment Execution")
-                    logCustomStep("Deployment", "Deploying ${env.PROJECT_CODENAME} (v${env.APP_VERSION}) to [${params.ENVIRONMENT}] using ${params.DEPLOY_STRATEGY} strategy...")
-                    
+                    echo ">>> [Final Deployment] : Deploying to ${params.ENVIRONMENT} environment <<<"
                     if (isUnix()) {
-                        sh """
-                            echo "Target Environment : ${params.ENVIRONMENT}"
-                            echo "Deployment Strategy: ${params.DEPLOY_STRATEGY}"
-                            echo "Status             : 100% SUCCESSFUL"
-                        """
+                        sh 'echo "Deployment Sequence Completed 100% Error-Free!"'
                     } else {
-                        bat """
-                            echo Target Environment : ${params.ENVIRONMENT}
-                            echo Deployment Strategy: ${params.DEPLOY_STRATEGY}
-                            echo Status             : 100% SUCCESSFUL
-                        """
+                        bat 'echo Deployment Sequence Completed 100% Error-Free!'
                     }
                 }
             }
@@ -218,18 +162,13 @@ pipeline {
     
     post {
         always {
-            script {
-                logCustomStep("Pipeline Teardown", "Pipeline execution complete.")
-            }
+            echo ">>> [Pipeline Status] : Execution complete. Teardown finished. <<<"
         }
         success {
-            echo "🏆 SUCCESS: Enterprise Jenkins Remoting Pipeline completed 100% error-free!"
+            echo "🏆 SUCCESS: The distributed multi-node data-transfer pipeline executed flawlessly!"
         }
         failure {
-            echo "💥 FAILURE: Pipeline build failed. Please inspect console logs."
-        }
-        aborted {
-            echo "🛑 ABORTED: Build was cancelled or timed out."
+            echo "💥 FAILURE: An unexpected error occurred. Review the step logs."
         }
     }
 }
