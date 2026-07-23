@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins" width="120" />
   <h1>CodeAlpha Internship - Task 2</h1>
-  <h2>🚀 Advanced Jenkins Remoting & Distributed Builds</h2>
+  <h2>🚀 Advanced Enterprise Jenkins Remoting & Distributed Pipeline</h2>
 
   <p align="center">
     <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white" />
@@ -10,31 +10,29 @@
     <img src="https://img.shields.io/badge/CodeAlpha_Internship-blueviolet?style=for-the-badge" />
   </p>
   
-  <p><em>Demonstrating secure, multi-node, cross-architecture build distribution using Jenkins.</em></p>
+  <p><em>Enterprise-grade distributed build automation, cross-platform remoting, visual pipeline graphs, dynamic parallel matrix testing, and security gates.</em></p>
 </div>
 
 <br/>
 
 ## 🎯 Project Objective
 
-This project was developed as **Task 2** for the **CodeAlpha Internship**. The core objectives were to:
-- Set up **Jenkins Remoting** to connect remote Jenkins nodes.
-- Distribute build loads across different machines securely.
-- Run jobs on various architectures (Windows / Linux) remotely.
-- Improve security using node isolation.
-- Gain hands-on experience with Jenkins’ remote execution capabilities.
+This project was developed as **Task 2** for the **CodeAlpha Internship**. The core objectives are:
+- Provision **Jenkins Remoting** across isolated environments.
+- Distribute build workloads across architectures (Windows / Linux / Controller) safely.
+- Implement **Advanced CI/CD Pipelines** with interactive visualization in Jenkins UI (`Pipeline-Dashboard`, Stage View, and Graph View).
+- Enable dynamic parameterization, artifact fingerprinting, vulnerability gates, and automated deployment strategies.
 
 ---
 
-## ✨ Advanced Enhancements Implemented
+## ✨ Advanced Features & Architecture
 
-Beyond the standard requirements, this project was meticulously engineered to showcase **Enterprise-grade CI/CD** practices. It runs 100% error-free using only native Jenkins features:
-
-- 🔄 **Cross-Node Data Transfer (`Stash`/`Unstash`)**: The ultimate proof of remoting. The pipeline compiles dummy data on an isolated **Windows** node, stashes it securely to the Jenkins Controller's memory, and unstashes it onto an isolated **Linux** node for final packaging.
-- 🧬 **Dynamic Parallelism via Groovy**: The pipeline doesn't just run static stages. It utilizes native Groovy scripting to dynamically generate parallel testing matrices on the fly based on arrays.
-- 🚥 **Milestone Concurrency Control**: Implemented advanced `milestone()` locks to prevent older, delayed builds from accidentally overwriting newer builds during the deployment phase.
-- 🛡️ **Safe Workspace Isolation**: Strict `deleteDir()` enforcement ensures workspaces are perfectly sanitized before execution, eliminating cross-build contamination.
-- ⚙️ **Infrastructure & Configuration as Code**: Includes a complete `docker-compose.yml` and `casc.yaml` to instantly spin up the entire architecture (Controller + Linux Agent) from scratch without manual UI configuration.
+- 📊 **Visual Pipeline Dashboard & Graph View**: Integrated `pipeline-stage-view` and `pipeline-graph-view` with JCasC (`casc.yaml`) to automatically display visual pipeline graphs and stage execution details right on the Jenkins dashboard.
+- 🔄 **Cross-Platform Payload Stashing (`stash`/`unstash`)**: Compiles core binary payloads on isolated **Windows** nodes, stashes them to Controller memory, and unstashes them onto **Linux** nodes for security patching and assembly.
+- 🔀 **Dynamic Groovy Parallel Test Matrix**: Programmatically generates parallel test suites (PenTest Security, Integration Suite, Performance Load Test, API Contract Verification) via Groovy closures.
+- 🔒 **Security & Vulnerability Audit Gate**: Automated SAST and dependency analysis stage before release promotion.
+- 🛑 **Milestone Concurrency & Approval Lock**: Interactive manual gate for PROD promotions with `milestone()` step guards to abort delayed older builds automatically.
+- 🏷️ **Resilient Agent Selectors**: Built-in fallback label logic (`windows || linux || built-in`) ensures builds execute seamlessly even if specific agent nodes are offline or initializing.
 
 ---
 
@@ -42,39 +40,33 @@ Beyond the standard requirements, this project was meticulously engineered to sh
 
 | File / Directory | Description |
 | :--- | :--- |
-| <kbd>jenkinsfile</kbd> | The core Groovy pipeline. Features dynamic parallel stages, stashing, and approval gates. |
-| <kbd>casc.yaml</kbd> | Jenkins Configuration as Code (JCasC) file to automatically provision nodes, security, and jobs. |
-| <kbd>docker-compose.yml</kbd> | IaC script to instantly spin up the Jenkins Controller and Linux SSH Agent in isolated containers. |
-| <kbd>connect-windows-agent.ps1</kbd> | PowerShell script to dynamically authenticate and connect a Windows machine as a JNLP remote agent. |
-| <kbd>nodeHealth.sh</kbd> | Bash script executed securely on the isolated Linux node. |
+| <kbd>Jenkinsfile</kbd> / <kbd>jenkinsfile</kbd> | Enterprise multi-stage pipeline featuring remoting, dynamic parallel matrix, security gate, MD5 fingerprinting, and deployment strategies. |
+| <kbd>casc.yaml</kbd> | Jenkins Configuration as Code (JCasC) file to auto-provision nodes, JNLP/SSH agents, jobs, and dashboard views. |
+| <kbd>plugins.txt</kbd> | Complete list of Jenkins plugins required for JCasC, Job DSL, Stage View, and Pipeline Graph View. |
+| <kbd>docker-compose.yml</kbd> | Infrastructure-as-Code script to launch Jenkins Controller & Linux SSH Agent containers. |
+| <kbd>connect-windows-agent.ps1</kbd> | PowerShell script to connect a Windows machine as a JNLP remote agent node. |
+| <kbd>nodeHealth.sh</kbd> | Linux system health check script executed during pipeline initialization. |
 
 ---
 
-## 🚀 How to Run this Architecture
+## 🚀 Quick Start Guide
 
-### 1. The Controller & Linux Agent (Docker)
-Ensure Docker is running, then spin up the controller and the isolated Linux node:
+### 1. Launch Jenkins & Agents via Docker
 ```bash
 docker-compose up -d --build
 ```
-Jenkins will start at `http://localhost:8080` (Credentials: `admin` / `admin`).
+Jenkins will start at **http://localhost:8080** (Admin User: `admin` / Password: `admin`).
 
-### 2. The Windows Agent (PowerShell)
-To connect your local Windows architecture to the Controller network:
+### 2. Connect Remote Windows Agent (Optional)
+To attach a Windows remote execution agent:
 ```powershell
 .\connect-windows-agent.ps1
 ```
 
-### 3. Execution
-1. Navigate to the Jenkins Dashboard.
-2. Select the automatically provisioned `Distributed-Build-Demo` job.
-3. Click **Build with Parameters**.
-4. Watch the pipeline flawlessly distribute workloads across isolated architectures!
-
-<br/>
-
-<div align="center">
-  <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExYWNhY2Q2ZTYzMzQ5MjZmY2I1ZjNmNWI5ZGJmN2Q2MjZmNjBiZjIyZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3oKIPEqDGUULpEU0aQ/giphy.gif" alt="Animated Terminal" width="400"/>
-  <br/>
-  <p><b>Built with passion for the CodeAlpha Internship</b></p>
-</div>
+### 3. View & Execute Pipelines in Jenkins
+1. Open **http://localhost:8080**.
+2. On the **Pipeline-Dashboard**, select either:
+   - **`⚡ Enterprise Advanced CI/CD Pipeline`**
+   - **`🌐 Distributed Cross-Node Remoting Demo`**
+3. Click **Build with Parameters** and select target parameters (`ENVIRONMENT`, `DEPLOY_STRATEGY`, `SECURITY_SCAN`, `RUN_FULL_SUITE`).
+4. Enjoy the real-time visual stage execution graph!

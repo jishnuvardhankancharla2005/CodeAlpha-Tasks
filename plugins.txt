@@ -5,6 +5,7 @@ ssh-slaves
 ws-cleanup
 git
 pipeline-stage-view
+pipeline-graph-view
 role-strategy
 matrix-auth
 cloudbees-folder
