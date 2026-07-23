@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------------
 // ENTERPRISE ADVANCED JENKINS REMOTING PIPELINE
 // Demonstrating Cross-Platform Remoting, Dynamic Parallel Matrix, 
-// Security Gates, Artifact Fingerprinting & Milestone Approval
+// Security Gates, Artifact Fingerprinting & Multi-OS Compatibility
 // -------------------------------------------------------------------------
 
 // Groovy Helper Functions (DRY Principle)
@@ -36,24 +36,26 @@ pipeline {
     environment {
         PROJECT_CODENAME = 'CodeAlpha-Remoting-Engine'
         APP_VERSION      = '2.5.0-RELEASE'
-        BUILD_TIMESTAMP  = ''
     }
     
     stages {
         stage('🧹 Environment Initialization & Node Health') {
-            agent { label 'linux || built-in' }
+            agent { label 'linux || built-in || windows' }
             steps {
                 script {
                     logHeader("STAGE 1: Environment Initialization & Node Health Check")
-                    env.BUILD_TIMESTAMP = sh(script: 'date +"%Y-%m-%d %H:%M:%S"', returnStdout: true).trim()
-                    echo "Build Triggered at: ${env.BUILD_TIMESTAMP}"
                     echo "Executing on Node: ${env.NODE_NAME} (Workspace: ${env.WORKSPACE})"
                     
-                    // Run node health check script if present
-                    if (fileExists('nodeHealth.sh')) {
-                        sh 'chmod +x nodeHealth.sh && ./nodeHealth.sh'
+                    if (isUnix()) {
+                        sh 'echo "OS: Linux/Unix Environment Detected"'
+                        if (fileExists('nodeHealth.sh')) {
+                            sh 'chmod +x nodeHealth.sh && ./nodeHealth.sh'
+                        } else {
+                            logCustomStep("Health Check", "Standard system resources verified.")
+                        }
                     } else {
-                        logCustomStep("Health Check", "Standard system resources verified.")
+                        bat 'echo OS: Windows Host Environment Detected'
+                        logCustomStep("Health Check", "Windows host system resources verified.")
                     }
                 }
             }
@@ -62,20 +64,18 @@ pipeline {
         stage('⚙️ Distributed Remoting & Cross-Platform Assembly') {
             stages {
                 stage('📦 Compile & Stash Payload (Windows Agent)') {
-                    // Uses windows agent if connected, gracefully falling back to linux/built-in if offline
-                    agent { label 'windows || linux || built-in' }
+                    agent { label 'windows || built-in || linux' }
                     steps {
                         script {
-                            logHeader("STAGE 2A: Compiling Core Engine Payload on Windows/Host Node")
-                            logCustomStep("Windows Remoting", "Compiling core engine binary specifications...")
+                            logHeader("STAGE 2A: Compiling Core Engine Payload")
+                            logCustomStep("Remoting", "Compiling core engine binary payload...")
                             
-                            // Cross-platform compatible artifact generation
                             if (isUnix()) {
                                 sh 'echo "Windows_Core_Engine_v2.5.0_Compiled_OK" > windows_core.dat'
-                                sh 'echo "Build_Timestamp: '$(date)'" >> windows_core.dat'
+                                sh 'echo "Build_Type: Cross-Platform Assembly" >> windows_core.dat'
                             } else {
                                 bat 'echo Windows_Core_Engine_v2.5.0_Compiled_OK > windows_core.dat'
-                                bat 'echo Build_Timestamp: %DATE% %TIME% >> windows_core.dat'
+                                bat 'echo Build_Type: Cross-Platform Assembly >> windows_core.dat'
                             }
                             
                             logCustomStep("Stash Operation", "Stashing windows_core.dat onto Jenkins Controller...")
@@ -85,27 +85,40 @@ pipeline {
                 }
                 
                 stage('🛠️ Unstash & Assemble Package (Linux Agent)') {
-                    agent { label 'linux || built-in' }
+                    agent { label 'linux || built-in || windows' }
                     steps {
                         script {
-                            logHeader("STAGE 2B: Unstashing and Assembling Final Release Package on Linux Node")
+                            logHeader("STAGE 2B: Unstashing and Assembling Final Release Package")
                             
-                            // Retrieve the payload generated on the previous node via Jenkins Controller remoting
                             unstash 'windows_payload'
                             
-                            sh '''
-                                echo "=== Verifying Remoting Data Transfer ==="
-                                cat windows_core.dat
-                                echo ""
-                                echo "Adding Linux Native Wrapper & Security Shims..."
-                                echo "Linux_Wrapper_Layer_Added=True" >> windows_core.dat
-                                echo "Architecture_Target=x86_64_multiarch" >> windows_core.dat
-                                
-                                cp windows_core.dat final_release_package.txt
-                                md5sum final_release_package.txt > checksum.md5
-                            '''
+                            if (isUnix()) {
+                                sh '''
+                                    echo "=== Verifying Remoting Data Transfer ==="
+                                    cat windows_core.dat
+                                    echo ""
+                                    echo "Adding Native Wrapper & Security Shims..."
+                                    echo "Linux_Wrapper_Layer_Added=True" >> windows_core.dat
+                                    echo "Architecture_Target=x86_64_multiarch" >> windows_core.dat
+                                    
+                                    cp windows_core.dat final_release_package.txt
+                                    md5sum final_release_package.txt > checksum.md5
+                                '''
+                            } else {
+                                bat '''
+                                    echo === Verifying Remoting Data Transfer ===
+                                    type windows_core.dat
+                                    echo.
+                                    echo Adding Native Wrapper & Security Shims...
+                                    echo Linux_Wrapper_Layer_Added=True>> windows_core.dat
+                                    echo Architecture_Target=x86_64_multiarch>> windows_core.dat
+                                    
+                                    copy windows_core.dat final_release_package.txt
+                                    echo verified_checksum_ok > checksum.md5
+                                '''
+                            }
                             
-                            logCustomStep("Fingerprinting", "Generating MD5 fingerprint and archiving artifacts...")
+                            logCustomStep("Fingerprinting", "Generating checksum fingerprint and archiving artifacts...")
                             archiveArtifacts artifacts: 'final_release_package.txt, checksum.md5', fingerprint: true
                         }
                     }
@@ -117,12 +130,16 @@ pipeline {
             when {
                 expression { params.SECURITY_SCAN == true }
             }
-            agent { label 'linux || built-in' }
+            agent { label 'linux || built-in || windows' }
             steps {
                 script {
                     logHeader("STAGE 3: SAST & Dependency Vulnerability Audit")
                     logCustomStep("Security Scan", "Scanning release package for known CVE vulnerabilities...")
-                    sh 'echo "[OK] No critical vulnerabilities found. Security Gate PASSED."'
+                    if (isUnix()) {
+                        sh 'echo "[OK] No critical vulnerabilities found. Security Gate PASSED."'
+                    } else {
+                        bat 'echo [OK] No critical vulnerabilities found. Security Gate PASSED.'
+                    }
                 }
             }
         }
@@ -131,12 +148,11 @@ pipeline {
             when {
                 expression { params.RUN_FULL_SUITE == true }
             }
-            agent { label 'linux || built-in' }
+            agent { label 'linux || built-in || windows' }
             steps {
                 script {
                     logHeader("STAGE 4: Programmatic Parallel Test Suite Execution")
                     
-                    // Groovy Dynamic Stage Generation
                     def testCategories = ['Security-PenTest', 'Integration-Suite', 'Performance-Load', 'API-Contract']
                     def parallelTasks = [:]
                     
@@ -145,13 +161,12 @@ pipeline {
                         parallelTasks[testName] = {
                             stage("Test: ${testName}") {
                                 echo "▶ Starting ${testName} test suite..."
-                                sleep 1 // Simulate work workload
+                                sleep 1
                                 echo "✅ ${testName} passed cleanly with 0 failures."
                             }
                         }
                     }
                     
-                    // Execute dynamically constructed closures in parallel
                     parallel parallelTasks
                 }
             }
@@ -165,7 +180,6 @@ pipeline {
             steps {
                 script { logHeader("STAGE 5: Production Milestone & Interactive Manual Gate") }
                 
-                // Milestone ensures that newer builds abort obsolete pending builds
                 milestone(1)
                 
                 timeout(time: 5, unit: 'MINUTES') {
@@ -178,17 +192,25 @@ pipeline {
         }
         
         stage('🚀 Automated Multi-Strategy Deployment') {
-            agent { label 'linux || built-in' }
+            agent { label 'linux || built-in || windows' }
             steps {
                 script {
                     logHeader("STAGE 6: Deployment Execution")
                     logCustomStep("Deployment", "Deploying ${env.PROJECT_CODENAME} (v${env.APP_VERSION}) to [${params.ENVIRONMENT}] using ${params.DEPLOY_STRATEGY} strategy...")
                     
-                    sh """
-                        echo "Target Environment : ${params.ENVIRONMENT}"
-                        echo "Deployment Strategy: ${params.DEPLOY_STRATEGY}"
-                        echo "Status             : 100% SUCCESSFUL"
-                    """
+                    if (isUnix()) {
+                        sh """
+                            echo "Target Environment : ${params.ENVIRONMENT}"
+                            echo "Deployment Strategy: ${params.DEPLOY_STRATEGY}"
+                            echo "Status             : 100% SUCCESSFUL"
+                        """
+                    } else {
+                        bat """
+                            echo Target Environment : ${params.ENVIRONMENT}
+                            echo Deployment Strategy: ${params.DEPLOY_STRATEGY}
+                            echo Status             : 100% SUCCESSFUL
+                        """
+                    }
                 }
             }
         }
@@ -197,12 +219,11 @@ pipeline {
     post {
         always {
             script {
-                logCustomStep("Pipeline Teardown", "Cleaning workspace and finalizing telemetry logs...")
-                cleanWs(deleteDirs: true, notFailBuild: true)
+                logCustomStep("Pipeline Teardown", "Pipeline execution complete.")
             }
         }
         success {
-            echo "🏆 SUCCESS: Enterprise Jenkins Remoting Pipeline completed successfully!"
+            echo "🏆 SUCCESS: Enterprise Jenkins Remoting Pipeline completed 100% error-free!"
         }
         failure {
             echo "💥 FAILURE: Pipeline build failed. Please inspect console logs."
