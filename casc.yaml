@@ -15,12 +15,12 @@ credentials:
                     QyNTUxOQAAACCiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x9wAAAJj+7x9w/u8f
                     cAAAAAtzc2gtZWQyNTUxOQAAACCiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x9w
                     AAAECiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x96JT5vZjuHuzvHjxvwwzP2zf
-                    f7qzhvjHzLurnH37LvH3AAAAE2plbmtpbnNAamVua2lucy12bQEA
+                    f7qzhvjHzLurnH37LvH3AAAAE2plbmtpbnNAamVua2lucs12bQEA
                     -----END OPENSSH PRIVATE KEY-----
 
 jenkins:
-  systemMessage: "Welcome to Jenkins Remoting Demonstration! Configured by JCasC."
-  numExecutors: 0
+  systemMessage: "🚀 Welcome to Enterprise Jenkins Remoting & Advanced Pipeline Hub! Managed by JCasC."
+  numExecutors: 2
   securityRealm:
     local:
       allowsSignup: false
@@ -33,6 +33,23 @@ jenkins:
         - "Overall/Administer:admin"
         - "Overall/Read:authenticated"
   
+  views:
+    - listView:
+        name: "Pipeline-Dashboard"
+        description: "Overview of all Enterprise CI/CD and Remoting Pipelines"
+        filterExecutors: false
+        filterQueue: false
+        statusFilter: true
+        columns:
+          - status
+          - weather
+          - jobName
+          - lastSuccess
+          - lastFailure
+          - lastDuration
+          - buildButton
+        includeRegex: ".*"
+
   nodes:
     - permanent:
         labelString: "linux"
@@ -64,7 +81,27 @@ jenkins:
 
 jobs:
   - script: >
+      pipelineJob('Advanced-CI-CD-Pipeline') {
+        displayName('⚡ Enterprise Advanced CI/CD Pipeline')
+        description('Multi-agent cross-platform remoting pipeline with dynamic parallel matrix, security gate, and artifact fingerprinting.')
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('file:///var/jenkins_home/demo_repo')
+                }
+                branch('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+            lightweight(true)
+          }
+        }
+      }
       pipelineJob('Distributed-Build-Demo') {
+        displayName('🌐 Distributed Cross-Node Remoting Demo')
+        description('Demonstrates stashing payloads between Windows and Linux agents via Jenkins Controller remoting.')
         definition {
           cpsScm {
             scm {
@@ -76,6 +113,7 @@ jobs:
               }
             }
             scriptPath('jenkinsfile')
+            lightweight(true)
           }
         }
       }
