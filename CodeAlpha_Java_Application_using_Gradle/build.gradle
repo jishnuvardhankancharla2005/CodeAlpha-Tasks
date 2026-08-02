@@ -1,0 +1,110 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'checkstyle'
+	id 'jacoco'
+	id 'org.owasp.dependencycheck' version '9.0.9'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+}
+
+if (projectDir.absolutePath.chars().any { it > 127 }) {
+	layout.buildDirectory = file("C:/tmp/gradle-build-${project.name}")
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = 17
+	options.encoding = 'UTF-8'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'net.bytebuddy:byte-buddy:1.15.11'
+	testImplementation 'net.bytebuddy:byte-buddy-agent:1.15.11'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+checkstyle {
+	toolVersion = '10.12.7'
+	configFile = file("config/checkstyle/checkstyle.xml")
+}
+
+jacoco {
+	toolVersion = '0.8.13'
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = true
+		html.required = true
+	}
+}
+
+dependencyCheck {
+	autoUpdate = true
+	failOnError = false
+	failBuildOnCVSS = 8.0
+	suppressionFile = 'config/dependency-check-suppressions.xml'
+	analyzers {
+		assemblyEnabled = false
+		centralEnabled = true
+	}
+}
+
+tasks.withType(Test).configureEach {
+	useJUnitPlatform()
+	jvmArgs(
+		'-XX:+EnableDynamicAgentLoading',
+		'--enable-native-access=ALL-UNNAMED',
+		'-Dnet.bytebuddy.experimental=true',
+		'-Dfile.encoding=UTF-8',
+		'-Dsun.jnu.encoding=UTF-8'
+	)
+}
+
+test {
+	exclude '**/integration/**'
+	if (projectDir.absolutePath.chars().any { it > 127 }) {
+		jacoco {
+			enabled = false
+		}
+	}
+	finalizedBy jacocoTestReport
+}
+
+task integrationTest(type: Test) {
+	description = 'Runs the integration tests.'
+	group = 'verification'
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	include '**/integration/**'
+	if (projectDir.absolutePath.chars().any { it > 127 }) {
+		jacoco {
+			enabled = false
+		}
+	}
+}
+
+check.dependsOn integrationTest
+
+tasks.register('copyJarToLocal', Copy) {
+	from "${layout.buildDirectory.get().asFile}/libs"
+	into "${projectDir}/build/libs"
+	include "*.jar"
+}
+bootJar.finalizedBy copyJarToLocal
