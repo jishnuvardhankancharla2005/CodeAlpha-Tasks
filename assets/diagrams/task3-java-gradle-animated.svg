@@ -1,0 +1,105 @@
+<svg width="900" height="380" viewBox="0 0 900 380" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#131f14"/>
+    </linearGradient>
+    <linearGradient id="appGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6DB33F"/>
+      <stop offset="100%" stop-color="#3f7a20"/>
+    </linearGradient>
+    <linearGradient id="promGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E6522C"/>
+      <stop offset="100%" stop-color="#a5391c"/>
+    </linearGradient>
+    <linearGradient id="grafGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F46800"/>
+      <stop offset="100%" stop-color="#b34a00"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <linearGradient id="jenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D24939"/>
+      <stop offset="100%" stop-color="#8f2f24"/>
+    </linearGradient>
+    <filter id="glow3" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      .p1{animation:pulse 2.2s ease-in-out infinite}
+      .p2{animation:pulse 2.2s ease-in-out infinite .4s}
+      .p3{animation:pulse 2.2s ease-in-out infinite .8s}
+      .p4{animation:pulse 2.2s ease-in-out infinite 1.2s}
+      @keyframes pulse{0%{opacity:.75}50%{opacity:1}100%{opacity:.75}}
+      .flow{stroke-dasharray:7 5;animation:dash 1s linear infinite}
+      @keyframes dash{to{stroke-dashoffset:-24}}
+      .ttl{font-family:'Segoe UI',Helvetica,Arial,sans-serif;fill:#fff;font-weight:700}
+      .sub{font-family:'Segoe UI',Helvetica,Arial,sans-serif;fill:#cbd5e1;font-size:11.5px}
+      .tag{font-family:'Segoe UI',Helvetica,Arial,sans-serif;fill:#94a3b8;font-size:11px}
+    </style>
+  </defs>
+
+  <rect width="900" height="380" rx="16" fill="url(#bg3)"/>
+  <text x="450" y="32" text-anchor="middle" class="ttl" font-size="17">☕ Java + Gradle — Build, Deliver &amp; Observe Pipeline</text>
+  <text x="450" y="52" text-anchor="middle" class="tag">Gradle-automated Spring Boot service with full CI/CD and live observability</text>
+
+  <!-- Jenkins pipeline (top) -->
+  <g class="p1" filter="url(#glow3)">
+    <rect x="330" y="75" width="240" height="70" rx="14" fill="url(#jenGrad)" stroke="#fff" stroke-opacity="0.25"/>
+  </g>
+  <text x="450" y="102" text-anchor="middle" class="ttl" font-size="13">⚙️ Jenkins — 8-Stage Pipeline</text>
+  <text x="450" y="120" text-anchor="middle" class="sub">lint → test → scan → package → build → deploy</text>
+  <text x="450" y="134" text-anchor="middle" class="sub">Gradle wrapper · cross-platform (sh / bat)</text>
+
+  <!-- Spring Boot app -->
+  <g class="p2" filter="url(#glow3)">
+    <rect x="60" y="200" width="220" height="90" rx="14" fill="url(#appGrad)" stroke="#fff" stroke-opacity="0.25"/>
+  </g>
+  <text x="170" y="230" text-anchor="middle" class="ttl" font-size="13">🚀 Spring Boot App</text>
+  <text x="170" y="248" text-anchor="middle" class="sub">REST + Actuator :5173</text>
+  <text x="170" y="264" text-anchor="middle" class="sub">Micrometer metrics exporter</text>
+
+  <!-- Prometheus -->
+  <g class="p3" filter="url(#glow3)">
+    <rect x="340" y="200" width="220" height="90" rx="14" fill="url(#promGrad)" stroke="#fff" stroke-opacity="0.25"/>
+  </g>
+  <text x="450" y="230" text-anchor="middle" class="ttl" font-size="13">🔥 Prometheus :9090</text>
+  <text x="450" y="248" text-anchor="middle" class="sub">Scrapes app + host metrics</text>
+  <text x="450" y="264" text-anchor="middle" class="sub">Time-series storage</text>
+
+  <!-- Grafana -->
+  <g class="p4" filter="url(#glow3)">
+    <rect x="620" y="200" width="220" height="90" rx="14" fill="url(#grafGrad)" stroke="#fff" stroke-opacity="0.25"/>
+  </g>
+  <text x="730" y="230" text-anchor="middle" class="ttl" font-size="13">📈 Grafana :3000</text>
+  <text x="730" y="248" text-anchor="middle" class="sub">Auto-provisioned dashboards</text>
+  <text x="730" y="264" text-anchor="middle" class="sub">JVM · HTTP · OS panels</text>
+
+  <!-- Node Exporter -->
+  <g class="p2" filter="url(#glow3)">
+    <rect x="60" y="320" width="220" height="45" rx="12" fill="url(#nodeGrad)" stroke="#fff" stroke-opacity="0.2"/>
+  </g>
+  <text x="170" y="347" text-anchor="middle" class="sub" font-weight="600">🖥️ Node Exporter :9100 — host telemetry</text>
+
+  <!-- Jenkins -> App (deploy) -->
+  <path d="M400 145 L200 200" stroke="#f8fafc" stroke-width="2.2" class="flow" fill="none"/>
+  <circle r="4" fill="#ffffff"><animateMotion dur="1.4s" repeatCount="indefinite" path="M400 145 L200 200"/></circle>
+  <text x="270" y="175" text-anchor="middle" class="tag" font-size="10">build &amp; deploy</text>
+
+  <!-- App -> Prometheus (scrape) -->
+  <path d="M282 245 H338" stroke="#f8fafc" stroke-width="2.2" class="flow" fill="none"/>
+  <circle r="4" fill="#ffffff"><animateMotion dur="1.2s" repeatCount="indefinite" path="M282 245 H338"/></circle>
+
+  <!-- Node Exporter -> Prometheus (scrape) -->
+  <path d="M282 340 L438 292" stroke="#94a3b8" stroke-width="1.8" class="flow" fill="none"/>
+  <circle r="3.5" fill="#cbd5e1"><animateMotion dur="1.6s" repeatCount="indefinite" path="M282 340 L438 292"/></circle>
+
+  <!-- Prometheus -> Grafana (query) -->
+  <path d="M562 245 H618" stroke="#f8fafc" stroke-width="2.2" class="flow" fill="none"/>
+  <circle r="4" fill="#ffffff"><animateMotion dur="1.2s" repeatCount="indefinite" path="M562 245 H618"/></circle>
+
+  <text x="450" y="368" text-anchor="middle" class="tag">Gradle lifecycle (checkstyle → jacoco → test → integrationTest → bootJar) runs inside every pipeline stage</text>
+</svg>
