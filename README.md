@@ -38,7 +38,7 @@ Each task folder contains its own detailed README with setup instructions, archi
 <img src="./assets/architecture-animated.svg" alt="Animated architecture diagram of the three-task DevOps pipeline" width="100%"/>
 </div>
 
-<p align="center"><i>Live SVG animation — pulsing nodes and moving data-flow indicators trace the path from remote build trigger to deployed, monitored, load-balanced infrastructure.</i></p>
+<p align="center"><i>The unified pipeline view above. Each task also has its own detailed, animated architecture diagram in its section below.</i></p>
 
 ---
 
@@ -65,7 +65,10 @@ Each task folder contains its own detailed README with setup instructions, archi
 │   └── README.md
 │
 ├── assets/
-│   └── architecture-animated.svg
+│   ├── architecture-animated.svg              # combined 3-task pipeline view
+│   ├── task2-jenkins-remoting-animated.svg     # Task 2 architecture
+│   ├── task3-java-gradle-animated.svg          # Task 3 architecture
+│   └── task4-docker-webserver-animated.svg     # Task 4 architecture
 │
 └── README.md                       # ← you are here
 ```
@@ -97,6 +100,10 @@ Each task folder contains its own detailed README with setup instructions, archi
 
 **Why it matters:** This goes beyond "connect two agents" — it demonstrates understanding of *why* remoting exists (workload distribution, architecture coverage) and *how* to keep it secure (isolation, least privilege, scoped trust), which is the part most junior setups skip.
 
+<div align="center">
+<img src="./assets/task2-jenkins-remoting-animated.svg" alt="Animated architecture diagram of Jenkins Remoting setup" width="100%"/>
+</div>
+
 📂 [`/task-2-jenkins-remoting`](./task-2-jenkins-remoting) · [Full README](./task-2-jenkins-remoting/README.md)
 
 ---
@@ -112,6 +119,10 @@ Each task folder contains its own detailed README with setup instructions, archi
 - A **one-command orchestration script** (`start.sh` / `start.bat`) that stands up the entire 5-container stack (app, Prometheus, Grafana, Node Exporter, Jenkins) in one shot.
 
 **Why it matters:** Anyone can run `gradle build`. This demonstrates that a build pipeline isn't finished until you can *see* what the application is doing in production — dependency management, testing, and delivery all in service of an observable, deployable artifact.
+
+<div align="center">
+<img src="./assets/task3-java-gradle-animated.svg" alt="Animated architecture diagram of the Java Gradle build and observability pipeline" width="100%"/>
+</div>
 
 📂 [`/task-3-java-gradle`](./task-3-java-gradle) · [Full README](./task-3-java-gradle/README.md)
 
@@ -129,6 +140,10 @@ Each task folder contains its own detailed README with setup instructions, archi
 - A **PowerShell demo suite** that proves each of these claims live: `scale-demo.ps1`, `simulate-crash.ps1` (kills PID 1 inside a container to test failover), `test-advanced.ps1`, and `test-lifecycle.ps1`.
 
 **Why it matters:** This treats "web server in Docker" as a systems problem — availability, isolation, and resource governance — and then proves each property with a runnable script instead of just asserting it in prose.
+
+<div align="center">
+<img src="./assets/task4-docker-webserver-animated.svg" alt="Animated architecture diagram of the load-balanced, self-healing Docker web server cluster" width="100%"/>
+</div>
 
 📂 [`/task-4-docker-webserver`](./task-4-docker-webserver) · [Full README](./task-4-docker-webserver/README.md)
 
