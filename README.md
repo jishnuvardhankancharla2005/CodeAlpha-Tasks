@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,100:2496ED&height=200&section=header&text=DevOps%20%26%20Cloud%20Engineering&fontSize=42&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=CodeAlpha%20Internship%20%E2%80%94%20Compound%20Project%20Repository&descAlignY=58&descSize=18" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:0f172a,100:2496ED&amp;height=200&amp;section=header&amp;text=DevOps%20%26%20Cloud%20Engineering&amp;fontSize=42&amp;fontColor=ffffff&amp;animation=fadeIn&amp;fontAlignY=38&amp;desc=CodeAlpha%20Internship%20%E2%80%94%20Compound%20Project%20Repository&amp;descAlignY=58&amp;descSize=18" width="100%"/>
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=22&duration=3000&pause=1000&color=38BDF8&center=true&vCenter=true&width=780&lines=Jenkins+Remoting+%E2%80%A2+Distributed+Build+Pipelines;Java+%2B+Gradle+%E2%80%A2+Automated+CI%2FCD+Microservices;Docker+%E2%80%A2+Load-Balanced%2C+Self-Healing+Web+Infrastructure" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&amp;size=22&amp;duration=3000&amp;pause=1000&amp;color=38BDF8&amp;center=true&amp;vCenter=true&amp;width=780&amp;lines=Jenkins+Remoting+%E2%80%A2+Distributed+Build+Pipelines;Java+%2B+Gradle+%E2%80%A2+Automated+CI%2FCD+Microservices;Docker+%E2%80%A2+Load-Balanced%2C+Self-Healing+Web+Infrastructure" alt="Typing SVG" />
 
 <br/><br/>
 
@@ -190,5 +190,5 @@ I'm looking to bring this same approach — building things that don't just meet
 ---
 
 <div align="center">
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2496ED,100:0f172a&height=100&section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:2496ED,100:0f172a&amp;height=100&amp;section=footer" width="100%"/>
 </div>
