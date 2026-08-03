@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:0f172a,100:2496ED&amp;height=200&amp;section=header&amp;text=DevOps%20%26%20Cloud%20Engineering&amp;fontSize=42&amp;fontColor=ffffff&amp;animation=fadeIn&amp;fontAlignY=38&amp;desc=CodeAlpha%20Internship%20%E2%80%94%20Compound%20Project%20Repository&amp;descAlignY=58&amp;descSize=18" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,100:2496ED&height=200&section=header&text=DevOps%20%26%20Cloud%20Engineering&fontSize=42&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=CodeAlpha%20Internship%20%E2%80%94%20Compound%20Project%20Repository&descAlignY=58&descSize=18" width="100%"/>
 
 <br/>
 
@@ -190,5 +190,5 @@ I'm looking to bring this same approach — building things that don't just meet
 ---
 
 <div align="center">
-<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:2496ED,100:0f172a&amp;height=100&amp;section=footer" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2496ED,100:0f172a&height=100&section=footer&animation=twinkling" width="100%"/>
 </div>
