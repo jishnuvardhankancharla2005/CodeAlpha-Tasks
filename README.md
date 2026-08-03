@@ -1,6 +1,10 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,100:2496ED&height=200&section=header&text=DevOps%20%26%20Cloud%20Engineering&fontSize=42&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=CodeAlpha%20Internship%20%E2%80%94%20Compound%20Project%20Repository&descAlignY=58&descSize=18" width="100%"/>
+<p align="center">
+  <img src="https://komarev.com/ghpvc/?username=jishnuvardhankancharla2005&label=Profile%20Views&color=00d4ff&style=for-the-badge" alt="Profile Views" />
+  &nbsp;
+  <img src="https://img.shields.io/badge/Instagram%20Followers-350-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram Followers" />
+</p>
 
 <br/>
 
