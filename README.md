@@ -1,6 +1,6 @@
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,35,45&height=180&section=header&text=Jishnu%20Vardhan%20Kancharla&fontSize=32&fontColor=00d4ff&animation=twinkling" width="100%" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,35,45&height=180&section=header&fontSize=32&fontColor=00d4ff&animation=twinkling" width="100%" />
 
 <br/>
 
