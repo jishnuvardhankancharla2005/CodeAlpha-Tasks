@@ -1,6 +1,8 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,100:2496ED&height=200&section=header&text=DevOps%20%26%20Cloud%20Engineering&fontSize=42&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=CodeAlpha%20Internship%20%E2%80%94%20Compound%20Project%20Repository&descAlignY=58&descSize=18" width="100%"/>
+<p align="center">
+  <img width="100%" src="https://capsule-render.vercel.app/api?type=venom&height=300&color=0:0f172a,50:2496ED,100:38BDF8&text=DevOps%20%26%20Cloud%20Engineering&fontColor=ffffff&fontSize=48&fontAlignY=42&animation=twinkling&desc=Enterprise%20DevOps%20Portfolio%20•%20CodeAlpha%20Internship&descAlignY=63&descSize=18"/>
+</p>
 
 <br/>
 
