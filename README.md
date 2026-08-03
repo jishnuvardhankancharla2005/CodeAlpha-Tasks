@@ -1,10 +1,6 @@
 <div align="center">
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=jishnuvardhankancharla2005&label=Profile%20Views&color=00d4ff&style=for-the-badge" alt="Profile Views" />
-  &nbsp;
-  <img src="https://img.shields.io/badge/Instagram%20Followers-350-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram Followers" />
-</p>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,35,45&height=180&section=header&text=Jishnu%20Vardhan%20Kancharla&fontSize=32&fontColor=00d4ff&animation=twinkling" width="100%" />
 
 <br/>
 
