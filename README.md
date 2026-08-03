@@ -26,9 +26,7 @@
 
 This repository consolidates my **CodeAlpha DevOps & Cloud Engineering Internship** deliverables into one submission. Rather than three disconnected exercises, I designed them to interlock as a single pipeline narrative: a change is picked up by a **distributed Jenkins remoting setup**, built and validated by a **Gradle-automated Java service with full observability**, and the result is shipped to a **self-healing, load-balanced Docker infrastructure**. That flow is what the animated diagram below represents.
 
-Each task folder contains its own detailed README with setup instructions, architecture notes, and demo scripts. This root README exists to give a reviewer the complete picture in one pass — what was built, why it was built that way, and what it demonstrates.
-
-> 📌 **Note:** Replace the placeholders below (`[Your Name]`, GitHub/LinkedIn links, folder paths) with your actual details before publishing.
+Each task lives in its own dedicated repository, linked below, with full setup instructions, architecture notes, and demo scripts. This page exists to give a reviewer the complete picture in one pass — what was built, why it was built that way, and what it demonstrates.
 
 ---
 
@@ -42,36 +40,13 @@ Each task folder contains its own detailed README with setup instructions, archi
 
 ---
 
-## 📁 Repository Structure
+## 📁 Project Repositories
 
-```text
-.
-├── task-2-jenkins-remoting/        # Distributed CI/CD orchestration across remote nodes
-│   ├── Jenkinsfile
-│   ├── casc.yaml
-│   ├── docker-compose.yml
-│   └── README.md
-│
-├── task-3-java-gradle/             # Spring Boot microservice, Gradle build, observability stack
-│   ├── src/
-│   ├── build.gradle
-│   ├── Jenkinsfile
-│   ├── docker-compose.yml
-│   └── README.md
-│
-├── task-4-docker-webserver/        # Load-balanced, self-healing Nginx web cluster
-│   ├── docker-compose.yml
-│   ├── scripts/
-│   └── README.md
-│
-├── assets/
-│   ├── architecture-animated.svg              # combined 3-task pipeline view
-│   ├── task2-jenkins-remoting-animated.svg     # Task 2 architecture
-│   ├── task3-java-gradle-animated.svg          # Task 3 architecture
-│   └── task4-docker-webserver-animated.svg     # Task 4 architecture
-│
-└── README.md                       # ← you are here
-```
+| Task | Repository |
+| :--- | :--- |
+| ⚙️ Task 2 — Jenkins Remoting | [CodeAlpha_Jenkins-Remoting-Project](https://github.com/jishnuvardhankancharla2005/CodeAlpha_Jenkins-Remoting-Project) |
+| ☕ Task 3 — Java Application using Gradle | [CodeAlpha_java_application_by_gradle](https://github.com/jishnuvardhankancharla2005/CodeAlpha_java_application_by_gradle) |
+| 🐳 Task 4 — Web Server using Docker | [CodeAlpha_Web_Server_Using_Docker](https://github.com/jishnuvardhankancharla2005/CodeAlpha_Web_Server_Using_Docker) |
 
 ---
 
@@ -104,7 +79,7 @@ Each task folder contains its own detailed README with setup instructions, archi
 <img src="./assets/task2-jenkins-remoting-animated.svg" alt="Animated architecture diagram of Jenkins Remoting setup" width="100%"/>
 </div>
 
-📂 [`/task-2-jenkins-remoting`](./task-2-jenkins-remoting) · [Full README](./task-2-jenkins-remoting/README.md)
+📂 **[Full README →](https://github.com/jishnuvardhankancharla2005/CodeAlpha_Jenkins-Remoting-Project#readme)**
 
 ---
 
@@ -124,7 +99,7 @@ Each task folder contains its own detailed README with setup instructions, archi
 <img src="./assets/task3-java-gradle-animated.svg" alt="Animated architecture diagram of the Java Gradle build and observability pipeline" width="100%"/>
 </div>
 
-📂 [`/task-3-java-gradle`](./task-3-java-gradle) · [Full README](./task-3-java-gradle/README.md)
+📂 **[Full README →](https://github.com/jishnuvardhankancharla2005/CodeAlpha_java_application_by_gradle#readme)**
 
 ---
 
@@ -145,7 +120,7 @@ Each task folder contains its own detailed README with setup instructions, archi
 <img src="./assets/task4-docker-webserver-animated.svg" alt="Animated architecture diagram of the load-balanced, self-healing Docker web server cluster" width="100%"/>
 </div>
 
-📂 [`/task-4-docker-webserver`](./task-4-docker-webserver) · [Full README](./task-4-docker-webserver/README.md)
+📂 **[Full README →](https://github.com/jishnuvardhankancharla2005/CodeAlpha_Web_Server_Using_Docker#readme)**
 
 ---
 
@@ -178,22 +153,26 @@ Each project stands on its own, but together they cover the full loop: **remote 
 
 ## ▶️ Running Each Project
 
-```bash
-# Clone the repository
-git clone https://github.com/<your-username>/<your-repo-name>.git
-cd <your-repo-name>
+Each task lives in its own repository — clone whichever one you want to run:
 
+```bash
 # Task 2 — Jenkins Remoting
-cd task-2-jenkins-remoting && docker-compose up -d --build
+git clone https://github.com/jishnuvardhankancharla2005/CodeAlpha_Jenkins-Remoting-Project.git
+cd CodeAlpha_Jenkins-Remoting-Project
+docker-compose up -d --build
 
 # Task 3 — Java Application using Gradle
-cd ../task-3-java-gradle && ./start.sh        # or start.bat on Windows
+git clone https://github.com/jishnuvardhankancharla2005/CodeAlpha_java_application_by_gradle.git
+cd CodeAlpha_java_application_by_gradle
+./start.sh        # or start.bat on Windows
 
 # Task 4 — Web Server using Docker
-cd ../task-4-docker-webserver && docker compose up -d
+git clone https://github.com/jishnuvardhankancharla2005/CodeAlpha_Web_Server_Using_Docker.git
+cd CodeAlpha_Web_Server_Using_Docker
+docker compose up -d
 ```
 
-Each subfolder's README has full prerequisites, port mappings, and demo instructions.
+Each repository's own README has full prerequisites, port mappings, and demo instructions.
 
 ---
 
