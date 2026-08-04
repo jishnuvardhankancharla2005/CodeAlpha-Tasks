@@ -10,7 +10,6 @@ credentials:
               privateKeySource:
                 directEntry:
                   privateKey: "${LINUX_AGENT_SSH_KEY}"
-
 jenkins:
   systemMessage: "🚀 Welcome to Enterprise Jenkins Remoting & Advanced Pipeline Hub! Managed by JCasC."
   numExecutors: 0
@@ -23,7 +22,7 @@ jenkins:
   authorizationStrategy:
     globalMatrix:
       permissions:
-        - "Overall/Administer:admin"
+        - "Overall/Administer:${JENKINS_ADMIN_USER}"
         - "Overall/Read:authenticated"
   
   views:
@@ -42,7 +41,6 @@ jenkins:
           - lastDuration
           - buildButton
         includeRegex: ".*"
-
   nodes:
     - permanent:
         labelString: "linux"
@@ -71,7 +69,6 @@ jenkins:
               failIfWorkDirIsMissing: false
               internalDir: "remoting"
               workDirPath: "C:\\JenkinsAgent"
-
 jobs:
   - script: >
       pipelineJob('Advanced-CI-CD-Pipeline') {
