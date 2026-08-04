@@ -9,24 +9,17 @@ credentials:
               description: "SSH Key for Linux Agent"
               privateKeySource:
                 directEntry:
-                  privateKey: |-
-                    -----BEGIN OPENSSH PRIVATE KEY-----
-                    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-                    QyNTUxOQAAACCiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x9wAAAJj+7x9w/u8f
-                    cAAAAAtzc2gtZWQyNTUxOQAAACCiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x9w
-                    AAAECiU+b2Y7h7s7x48b8M0z9s33+6s4b4x8y7q5x9+y7x96JT5vZjuHuzvHjxvwwzP2zf
-                    f7qzhvjHzLurnH37LvH3AAAAE2plbmtpbnNAamVua2lucs12bQEA
-                    -----END OPENSSH PRIVATE KEY-----
+                  privateKey: "${LINUX_AGENT_SSH_KEY}"
 
 jenkins:
   systemMessage: "🚀 Welcome to Enterprise Jenkins Remoting & Advanced Pipeline Hub! Managed by JCasC."
-  numExecutors: 2
+  numExecutors: 0
   securityRealm:
     local:
       allowsSignup: false
       users:
-        - id: "admin"
-          password: "admin"
+        - id: "${JENKINS_ADMIN_USER}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
   authorizationStrategy:
     globalMatrix:
       permissions:
