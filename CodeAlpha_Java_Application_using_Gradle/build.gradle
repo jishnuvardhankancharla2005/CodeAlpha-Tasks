@@ -11,8 +11,8 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 if (projectDir.absolutePath.chars().any { it > 127 }) {
@@ -20,7 +20,7 @@ if (projectDir.absolutePath.chars().any { it > 127 }) {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	options.release = 17
+	options.release = 21
 	options.encoding = 'UTF-8'
 }
 
