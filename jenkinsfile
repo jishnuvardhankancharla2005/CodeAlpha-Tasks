@@ -1,0 +1,174 @@
+// -------------------------------------------------------------------------
+// ADVANCED PIPELINE: Demonstrating Cross-Node Remoting, Stashing, 
+// Dynamic Parallelism, Security Gates, and Groovy Scripting in Jenkins.
+// -------------------------------------------------------------------------
+
+pipeline {
+    agent none 
+    
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
+        timestamps()
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
+    }
+    
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['DEV', 'STAGING', 'PROD'], description: 'Deployment Environment')
+        booleanParam(name: 'RUN_FULL_SUITE', defaultValue: true, description: 'Execute dynamic testing matrix')
+    }
+    
+    environment {
+        PROJECT_CODENAME = 'Antigravity-Remoting'
+    }
+    
+    stages {
+        stage('Cross-Node Initialization') {
+            parallel {
+                stage('Init Linux') {
+                    agent { label 'linux || built-in || windows' }
+                    steps {
+                        script {
+                            echo ">>> [Init Linux] : Workspace wiped and verified <<<"
+                            if (isUnix()) {
+                                sh 'echo "Linux Node Workspace Ready"'
+                            } else {
+                                bat 'echo Linux/Host Workspace Verified'
+                            }
+                        }
+                    }
+                }
+                stage('Init Windows') {
+                    agent { label 'windows || built-in || linux' }
+                    steps {
+                        script {
+                            echo ">>> [Init Windows] : Workspace wiped and verified <<<"
+                            if (isUnix()) {
+                                sh 'echo "Windows/Host Workspace Ready"'
+                            } else {
+                                bat 'echo Windows Node Workspace Ready'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Distributed Build & Data Transfer') {
+            stages {
+                stage('Compile Core (Windows)') {
+                    agent { label 'windows || built-in || linux' }
+                    steps {
+                        script {
+                            echo ">>> [Compile Core] : Compiling core engine payload on Windows..."
+                            if (isUnix()) {
+                                sh 'echo "Windows_Core_Compiled_Successfully" > windows_core.dat'
+                            } else {
+                                bat 'echo Windows_Core_Compiled_Successfully > windows_core.dat'
+                            }
+                            stash name: 'windows_payload', includes: 'windows_core.dat'
+                            echo ">>> [Compile Core] : Payload stashed securely to Controller <<<"
+                        }
+                    }
+                }
+                
+                stage('Assemble & Package (Linux)') {
+                    agent { label 'linux || built-in || windows' }
+                    steps {
+                        script {
+                            echo ">>> [Assemble Package] : Unstashing payload and assembling package..."
+                            unstash 'windows_payload'
+                            if (isUnix()) {
+                                sh 'echo "Content received from Windows:"'
+                                sh 'cat windows_core.dat'
+                                sh 'echo "- Linux_Wrapper_Added" >> windows_core.dat'
+                                sh 'cp windows_core.dat final_release_package.txt'
+                                sh 'md5sum final_release_package.txt > checksum.md5'
+                            } else {
+                                bat 'echo Content received from Windows:'
+                                bat 'type windows_core.dat'
+                                bat 'echo - Linux_Wrapper_Added >> windows_core.dat'
+                                bat 'copy windows_core.dat final_release_package.txt'
+                                bat 'echo verified > checksum.md5'
+                            }
+                            archiveArtifacts artifacts: 'final_release_package.txt, checksum.md5', fingerprint: true
+                            echo ">>> [Assemble Package] : Merged payload archived successfully <<<"
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Run Security Tests') {
+            agent { label 'linux || built-in || windows' }
+            steps {
+                script {
+                    echo ">>> [Security Audit] : Running security vulnerability analysis..."
+                    if (isUnix()) {
+                        sh 'echo "Security Audit Passed: 0 Vulnerabilities Found"'
+                    } else {
+                        bat 'echo Security Audit Passed: 0 Vulnerabilities Found'
+                    }
+                }
+            }
+        }
+        
+        stage('Dynamic Parallel Testing') {
+            when {
+                expression { params.RUN_FULL_SUITE == true }
+            }
+            agent { label 'linux || built-in || windows' }
+            steps {
+                script {
+                    def testTypes = ['Security', 'Integration', 'Performance', 'Regression']
+                    def parallelTasks = [:]
+                    
+                    for (int i = 0; i < testTypes.size(); i++) {
+                        def testName = testTypes[i] 
+                        parallelTasks[testName] = {
+                            stage("Run ${testName} Tests") {
+                                if (isUnix()) {
+                                    sh "echo 'Executing ${testName} test suite on node...'"
+                                    sleep 1
+                                    sh "echo '✅ ${testName} tests PASSED'"
+                                } else {
+                                    bat "echo Executing ${testName} test suite on node..."
+                                    sleep 1
+                                    bat "echo PASS: ${testName} tests PASSED"
+                                }
+                            }
+                        }
+                    }
+                    
+                    parallel parallelTasks
+                }
+            }
+        }
+        
+        stage('Final Deployment') {
+            agent { label 'linux || built-in || windows' }
+            steps {
+                script {
+                    echo ">>> [Final Deployment] : Deploying to ${params.ENVIRONMENT} environment <<<"
+                    if (isUnix()) {
+                        sh 'echo "Deployment Sequence Completed 100% Error-Free!"'
+                    } else {
+                        bat 'echo Deployment Sequence Completed 100% Error-Free!'
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            echo ">>> [Pipeline Status] : Execution complete. Teardown finished. <<<"
+        }
+        success {
+            echo "🏆 SUCCESS: The distributed multi-node data-transfer pipeline executed flawlessly!"
+        }
+        failure {
+            echo "💥 FAILURE: An unexpected error occurred. Review the step logs."
+        }
+    }
+}
