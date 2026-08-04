@@ -6,7 +6,7 @@ WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy the prebuilt jar from the host build directory
-COPY build/libs/*-SNAPSHOT.jar app.jar
+COPY build/libs/demo-app-*.jar app.jar
 
 # Change ownership to non-root user
 RUN chown -R appuser:appgroup /app

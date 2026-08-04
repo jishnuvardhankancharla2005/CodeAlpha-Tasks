@@ -102,10 +102,19 @@ task integrationTest(type: Test) {
 
 check.dependsOn integrationTest
 
+jar {
+	enabled = false
+}
+
 tasks.register('copyJarToLocal', Copy) {
-	dependsOn bootJar, jar
+	dependsOn bootJar
+	onlyIf {
+		layout.buildDirectory.get().asFile.canonicalPath != file("${projectDir}/build").canonicalPath
+	}
 	from "${layout.buildDirectory.get().asFile}/libs"
 	into "${projectDir}/build/libs"
 	include "*.jar"
+	exclude "*-plain.jar"
 }
 bootJar.finalizedBy copyJarToLocal
+
