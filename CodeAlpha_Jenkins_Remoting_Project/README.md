@@ -126,14 +126,14 @@ A Bash diagnostic utility executed during pipeline initialization:
 
 | File | Type | Description |
 | :--- | :--- | :--- |
-| [`Jenkinsfile`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/jenkinsfile) | Pipeline Script | Multi-stage declarative pipeline featuring remoting, stashing, dynamic parallel testing matrix, security gates, and MD5 fingerprinting. |
-| [`casc.yaml`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/casc.yaml) | JCasC Config | Infrastructure-as-Code file auto-configuring Jenkins security, SSH/JNLP agents, plugins, Job DSL pipelines, and dashboards. |
-| [`docker-compose.yml`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/docker-compose.yml) | IaC Compose | Spins up `jenkins-controller` (port 8080/50000) and `jenkins-linux-agent` (SSH) in an isolated bridge network. |
-| [`Dockerfile`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/Dockerfile) | Container Build | Builds custom Jenkins image pre-baked with plugins listed in `plugins.txt` and JCasC configuration. |
-| [`connect-windows-agent.ps1`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/connect-windows-agent.ps1) | PowerShell | Automated agent connector script for attaching Windows remote nodes via JNLP remoting. |
-| [`nodeHealth.sh`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/nodeHealth.sh) | Shell Script | Health auditing script for Linux SSH agent nodes. |
-| [`plugins.txt`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/plugins.txt) | Dependency List | List of required Jenkins plugins (JCasC, Job DSL, Pipeline Stage View, Pipeline Graph View, SSH Slaves, Matrix Auth). |
-| [`architecture.svg`](file:///d:/Documents/CodeAlpha_Jenkins%20Remoting%20Project/architecture.svg) | Graphic | Vector SVG animation diagram detailing system nodes, payload flows, and testing matrices. |
+| [`Jenkinsfile`](jenkinsfile) | Pipeline Script | Multi-stage declarative pipeline featuring remoting, stashing, dynamic parallel testing matrix, security gates, and MD5 fingerprinting. |
+| [`casc.yaml`](casc.yaml) | JCasC Config | Infrastructure-as-Code file auto-configuring Jenkins security, SSH/JNLP agents, plugins, Job DSL pipelines, and dashboards. |
+| [`docker-compose.yml`](docker-compose.yml) | IaC Compose | Spins up `jenkins-controller` (port 8080/50000) and `jenkins-linux-agent` (SSH) in an isolated bridge network. |
+| [`Dockerfile`](Dockerfile) | Container Build | Builds custom Jenkins image pre-baked with plugins listed in `plugins.txt` and JCasC configuration. |
+| [`connect-windows-agent.ps1`](connect-windows-agent.ps1) | PowerShell | Automated agent connector script for attaching Windows remote nodes via JNLP remoting. |
+| [`nodeHealth.sh`](nodeHealth.sh) | Shell Script | Health auditing script for Linux SSH agent nodes. |
+| [`plugins.txt`](plugins.txt) | Dependency List | List of required Jenkins plugins (JCasC, Job DSL, Pipeline Stage View, Pipeline Graph View, SSH Slaves, Matrix Auth). |
+| [`architecture.svg`](architecture.svg) | Graphic | Vector SVG animation diagram detailing system nodes, payload flows, and testing matrices. |
 
 ---
 
