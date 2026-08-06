@@ -1,23 +1,18 @@
 <div align="center">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jenkins/jenkins-original.svg" alt="Jenkins Logo" width="120" />
+  <h1>CodeAlpha Internship - Task 2</h1>
+  <h2>🚀 Advanced Enterprise Jenkins Remoting &amp; Distributed Pipeline</h2>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,35,45&height=220&section=header&text=CodeAlpha%20Tasks&fontSize=48&fontColor=00d4ff&animation=twinkling" width="100%" />
-
-<br/>
-
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&amp;size=22&amp;duration=3000&amp;pause=1000&amp;color=38BDF8&amp;center=true&amp;vCenter=true&amp;width=780&amp;lines=Jenkins+Remoting+%E2%80%A2+Distributed+Build+Pipelines;Java+%2B+Gradle+%E2%80%A2+Automated+CI%2FCD+Microservices;Docker+%E2%80%A2+Load-Balanced%2C+Self-Healing+Web+Infrastructure" alt="Typing SVG" />
-
-<br/><br/>
-
-[![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)](#-task-2--jenkins-remoting)
-[![Java](https://img.shields.io/badge/Java-21_LTS-orange?style=for-the-badge&logo=openjdk)](#-task-3--java-application-using-gradle)
-[![Gradle](https://img.shields.io/badge/Gradle-8.13-02303A?style=for-the-badge&logo=gradle&logoColor=white)](#-task-3--java-application-using-gradle)
-[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](#-task-4--web-server-using-docker)
-[![Nginx](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)](#-task-4--web-server-using-docker)
-[![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)](#-task-3--java-application-using-gradle)
-[![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)](#-task-3--java-application-using-gradle)
-
-<p><b>Three end-to-end DevOps engineering projects — remote build orchestration, automated Java delivery, and containerized infrastructure — built as a single, coherent internship portfolio.</b></p>
-
+  <p align="center">
+    <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&amp;logo=Jenkins&amp;logoColor=white" />
+    <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&amp;logo=Docker&amp;logoColor=white" />
+    <img src="https://img.shields.io/badge/Groovy-4298B8?style=for-the-badge&amp;logo=Apache+Groovy&amp;logoColor=white" />
+    <img src="https://img.shields.io/badge/PowerShell-5391FE?style=for-the-badge&amp;logo=powershell&amp;logoColor=white" />
+    <img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&amp;logo=linux&amp;logoColor=black" />
+    <img src="https://img.shields.io/badge/CodeAlpha_Task_2-blueviolet?style=for-the-badge" />
+  </p>
+  
+  <p><em>Enterprise-grade distributed build automation, cross-platform remoting (Windows JNLP &amp; Linux SSH), JCasC IaC, visual pipeline graphs, dynamic parallel matrix testing, and security gates.</em></p>
 </div>
 
 ---
@@ -397,6 +392,4 @@ I'm looking to bring this same approach — building things that don't just meet
 
 ---
 
-<div align="center">
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:2496ED,100:0f172a&height=100&section=footer&animation=twinkling" width="100%"/>
 </div>
