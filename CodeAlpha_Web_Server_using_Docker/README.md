@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🐳 Code Alpha Task 4: Docker Web Server & Orchestration Stack
+# 🐳 Enterprise Docker Web Server & Orchestration Stack
 
 <p align="center">
   <b>A Production-Grade, High-Availability Nginx Load-Balanced Web Server Cluster with Auto-Healing &amp; Multi-Tier Network Isolation</b>
@@ -22,6 +22,11 @@
  |____/ \___/ \___|_|\_\___|_|      \_/\_/ \___|_.__/|____/ \___|_|    \_/ \___|_|   
 ```
 
+<br/>
+
+<img src="task4-docker-webserver-animated.svg" alt="Animated architecture diagram of the load-balanced, self-healing Docker web server cluster" width="100%"/>
+
+<br/><br/>
 <p align="center">
   <a href="#-key-features">Key Features</a> •
   <a href="#%EF%B8%8F-animated-system-architecture">Animated Architecture</a> •
